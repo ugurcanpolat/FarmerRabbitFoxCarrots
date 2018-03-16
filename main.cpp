@@ -11,16 +11,7 @@
 #include <iostream>
 #include <string>
 
-#include "Graph.h"
-
-using namespace std;
-
-#ifndef type_enum
-#define type_enum
-typedef enum Algorithm {
-    NONE = 0, BFS, DFS
-} ALGORITHM;
-#endif
+#include "Graph.cpp"
 
 int main(int argc, const char * argv[]) {
     // All arguments must be passed with run command
@@ -29,8 +20,8 @@ int main(int argc, const char * argv[]) {
         return 0;
     }
     
-    string algorithmInput(argv[1]);
-    ALGORITHM algorithmSelection = NONE;
+    std::string algorithmInput(argv[1]);
+    Algorithm algorithmSelection = NONE;
     
     if (algorithmInput.compare("bfs") == 0)
         algorithmSelection = BFS;
@@ -39,6 +30,22 @@ int main(int argc, const char * argv[]) {
     else {
         cout << "Please select either 'bfs' or 'dfs' algorithms." << endl << endl;
         return 0;
+    }
+    
+    Graph graph;
+    
+    switch (algorithmSelection) {
+        case BFS:
+            graph.bfsSolve();
+            break;
+            
+        case DFS:
+            graph.dfsSolve();
+            break;
+            
+        default:
+            cout << "Invalid algorithm type." << endl << endl;
+            return 0;
     }
     
     return 0;

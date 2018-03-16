@@ -6,3 +6,7 @@
 
 # Exclude Xcode project
 *.xcodeproj
+
+# Exclude executables
+*.out
+150140117

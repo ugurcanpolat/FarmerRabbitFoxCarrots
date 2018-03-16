@@ -11,5 +11,26 @@
 #ifndef Graph_h
 #define Graph_h
 
+#include <string>
+#include <vector>
+#include <queue>
+
+#include "Types.h"
+
+using namespace std;
+
+class Graph {
+  private:
+    vector<Node*> nodes;
+    queue<Node*> safeQueue;
+    void insertNode(Position farmer, Position rabbit, Position fox,
+                    Position carrot, Node* parent, Node* insert);
+    Node* findDuplicate(Node* const compare, Node* const parent);
+  public:
+    Graph();
+    ~Graph();
+    void bfsSolve() const;
+    void dfsSolve() const;
+};
 
 #endif /* Graph_h */
