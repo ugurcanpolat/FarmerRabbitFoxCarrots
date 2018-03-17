@@ -11,9 +11,12 @@
 #ifndef Graph_h
 #define Graph_h
 
+#include <chrono> // high_resolution_clock
 #include <string>
 #include <vector>
+#include <stack>
 #include <queue>
+#include <iomanip>
 
 #include "Types.h"
 

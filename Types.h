@@ -12,6 +12,9 @@
 #define Types_h
 
 #include <vector>
+#include <iostream>
+
+using namespace std;
 
 typedef enum Algorithm {
     NONE = 0, BFS, DFS
@@ -33,6 +36,9 @@ typedef class Node {
     bool isFinal() const;
     void update(Position pFarmer, Position pRabbit,
                 Position pFox, Position pCarrots);
+    void printNode() const;
+    void printMove(Node* const next);
+    int nodeId;
     Position farmer;
     Position rabbit;
     Position fox;
@@ -96,6 +102,48 @@ void Node::update(Position pFarmer, Position pRabbit,
     fox     = pFox;
     carrots = pCarrots;
     safe    = isSafe(pFarmer, pRabbit, pFox, pCarrots);
+}
+
+void Node::printNode() const {
+    if(farmer == EAST)
+        cout << "Farmer ";
+    if(rabbit == EAST)
+        cout << "Rabbit ";
+    if(carrots == EAST)
+        cout << "Carrot ";
+    if(fox == EAST)
+        cout << "Fox ";
+    cout << "|| ";
+    if(farmer == WEST)
+        cout << "Farmer ";
+    if(rabbit == WEST)
+        cout << "Rabbit ";
+    if(carrots == WEST)
+        cout << "Carrot ";
+    if(fox == WEST)
+        cout << "Fox ";
+    cout << endl;
+}
+
+void Node::printMove(Node* const next) {
+    cout << "(Farmer,";
+    if(farmer == EAST) {
+        if(rabbit != next->rabbit)
+            cout << " Rabbit, ";
+        if(carrots != next->carrots)
+            cout << " Carrot, ";
+        if(fox != next->fox)
+            cout << " Fox, ";
+        cout << ">)" << endl;
+    } else {
+        if(rabbit != next->rabbit)
+            cout << " Rabbit, ";
+        if(carrots != next->carrots)
+            cout << " Carrot, ";
+        if(fox != next->fox)
+            cout << " Fox, ";
+        cout << "<)" << endl;
+    }
 }
 
 #endif /* Types_h */

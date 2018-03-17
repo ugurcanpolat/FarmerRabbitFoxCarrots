@@ -12,7 +12,8 @@
 
 Graph::Graph() {
     Node* initial = new Node;
-    (*initial).update(EAST, EAST, EAST, EAST);
+    initial->update(EAST, EAST, EAST, EAST);
+    initial->nodeId = 0;
     nodes.push_back(initial);
     
     Node* parent = initial;
@@ -63,6 +64,7 @@ void Graph::insertNode(Position farmer, Position rabbit, Position fox,
     if (findDuplicate(newNode,insert) == nullptr) {
         newNode->adjacency.push_back(insert);
         insert->adjacency.push_back(newNode);
+        newNode->nodeId = static_cast<int>(nodes.size());
         nodes.push_back(newNode);
         
         if (newNode->safe)
@@ -98,9 +100,78 @@ Node* Graph::findDuplicate(Node* const compare, Node* const parent){
 }
 
 void Graph::bfsSolve() const {
-    return;
+    int visitCount = 1;
+    int maxMem = 0;
+    float runtime = 0.0;
+    int size = static_cast<int>(nodes.size());
+    
+    using namespace chrono;
+    auto bfsStart = high_resolution_clock::now(); // Begin time stamp
+    
+    bool flag[size];
+    vector<Node*> prev;
+    prev.resize(size);
+    
+    for(int i = 0; i < size; i++) {
+        flag[i] = false;
+        prev[i] = nullptr;
+    }
+    
+    queue<Node*> bfsQueue;
+    flag[0] = true;
+    bfsQueue.push(nodes[0]);
+    
+    while(!bfsQueue.empty()) {
+        Node* v = bfsQueue.front();
+        bfsQueue.pop();
+        
+        int adjSize = static_cast<int>(v->adjacency.size());
+        
+        for(int i = 0; i < adjSize; i++) {
+            Node* w = v->adjacency[i];
+            if(flag[w->nodeId] == false) {
+                flag[w->nodeId] = true;
+                prev[w->nodeId] = v;
+                bfsQueue.push(w);
+                
+                if(bfsQueue.size() > maxMem)
+                    maxMem = static_cast<int>(bfsQueue.size());
+            }
+            visitCount++;
+        }
+    }
+    
+    stack<Node*> printStack;
+    
+    int solutionCount = 0;
+    int visited = 14;
+    while(visited != 0) {
+        printStack.push(nodes[visited]);
+        visited = prev[visited]->nodeId;
+        solutionCount++;
+    }
+    printStack.push(nodes[visited]);
+    
+    auto bfsEnd = high_resolution_clock::now(); // End time stamp
+    // Get the elapsed time in unit microseconds
+    runtime = duration_cast<microseconds>(bfsEnd - bfsStart).count();
+    runtime /= 1000;
+    
+    cout << "Algorithm: BFS" << endl;
+    cout << "Number of the visited nodes: " << visitCount << endl;
+    cout << "Maximum number of nodes kept in the memory: " << maxMem << endl;
+    cout << "Running time: " << fixed << setprecision(3) << runtime << " milliseconds" << endl;
+    cout << "Solution move count: " << solutionCount << endl;
+    
+    while(!printStack.empty()) {
+        Node* current = printStack.top();
+        printStack.pop();
+        current->printNode();
+        if(!printStack.empty())
+            current->printMove(printStack.top());
+    }
 }
 
 void Graph::dfsSolve() const {
-    return;
+
 }
