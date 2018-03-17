@@ -158,7 +158,7 @@ void Graph::bfsSolve() const {
     }
     
     queue<Node*> bfsQueue;
-    flag[0] = true;
+    flag[start] = true;
     bfsQueue.push(nodes[start]);
     
     while(!bfsQueue.empty()) {
@@ -254,9 +254,10 @@ void Graph::dfsSolve() const {
             
             for(int i = 0; i < adjSize; i++) {
                 Node* v = u->adjacency[i];
-                dfsStack.push(v);
-                if(explored[v->nodeId] == false)
+                if(explored[v->nodeId] == false) {
+                    dfsStack.push(v);
                     parent[v->nodeId] = u;
+                }
                 
                 if(dfsStack.size() > maxMem)
                     maxMem = static_cast<int>(dfsStack.size());
