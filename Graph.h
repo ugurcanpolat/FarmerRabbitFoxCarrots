@@ -12,11 +12,10 @@
 #define Graph_h
 
 #include <chrono> // high_resolution_clock
-#include <string>
-#include <vector>
-#include <stack>
-#include <queue>
-#include <iomanip>
+#include <vector> // vector
+#include <stack> // stack
+#include <queue> // queue
+#include <iomanip> // setprecision, fixed
 
 #include "Types.h"
 
@@ -30,9 +29,7 @@ class Graph {
                     Position carrot, Node* parent, Node* insert);
     Node* findDuplicate(Node* const compare, Node* const parent);
     int findNode(Position farmer, Position rabbit,
-                   Position fox, Position carrot) const;
-    vector<Node*> dfsPath(Node* start, Node* end, vector<bool> explored,
-                          vector<Node*> path) const;
+                 Position fox, Position carrot) const;
   public:
     Graph();
     ~Graph();

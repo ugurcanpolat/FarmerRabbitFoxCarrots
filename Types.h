@@ -11,8 +11,8 @@
 #ifndef Types_h
 #define Types_h
 
-#include <vector>
-#include <iostream>
+#include <iostream> // cout
+#include <vector> // vector
 
 using namespace std;
 
@@ -33,7 +33,6 @@ typedef class Node {
     bool operator!=(const Node& compare);
     bool isSafe(Position pFarmer, Position pRabbit,
                 Position pFox, Position pCarrots) const;
-    bool isFinal() const;
     void update(Position pFarmer, Position pRabbit,
                 Position pFox, Position pCarrots);
     void printNode() const;
@@ -79,20 +78,14 @@ bool Node::operator!=(const Node& compare) {
 bool Node::isSafe(Position pFarmer, Position pRabbit,
                   Position pFox, Position pCarrots) const {
     
+    /* Check if it is a safe state or not */
+    
     if (pRabbit == pFox && pFarmer != pRabbit)
         return false;
     else if (pRabbit == pCarrots && pFarmer != pRabbit)
         return false;
     else
         return true;
-}
-
-bool Node::isFinal() const {
-    if (farmer == WEST && rabbit == WEST &&
-        fox == WEST    && carrots == WEST)
-        return true;
-    else
-        return false;
 }
 
 void Node::update(Position pFarmer, Position pRabbit,
