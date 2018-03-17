@@ -165,6 +165,9 @@ void Graph::bfsSolve() const {
         Node* v = bfsQueue.front();
         bfsQueue.pop();
         
+        if (*v == *nodes[end])
+            break;
+        
         int adjSize = static_cast<int>(v->adjacency.size());
         
         for(int i = 0; i < adjSize; i++) {
@@ -178,6 +181,8 @@ void Graph::bfsSolve() const {
                     maxMem = static_cast<int>(bfsQueue.size());
                 
                 visitCount++;
+                if (*w == *nodes[end])
+                    break;
             }
         }
     }
@@ -264,6 +269,8 @@ void Graph::dfsSolve() const {
                 
             }
             visitCount++;
+            if(*u == *nodes[end])
+                break;
         }
     }
     
