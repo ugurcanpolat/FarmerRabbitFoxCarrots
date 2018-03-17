@@ -71,13 +71,10 @@ void Graph::insertNode(Position farmer, Position rabbit, Position fox,
             safeQueue.push(newNode);
     } else {
         Node* duplicate = findDuplicate(newNode, insert);
-        if (*duplicate != *parent && duplicate->safe &&
-            duplicate->farmer != NOTSPECIFIED) {
+        if (*duplicate != *parent && duplicate->farmer != NOTSPECIFIED) {
             duplicate->adjacency.push_back(insert);
             insert->adjacency.push_back(duplicate);
-        }
-        
-        if (duplicate->farmer == NOTSPECIFIED)
+        } else
             delete duplicate;
         
         delete newNode;
