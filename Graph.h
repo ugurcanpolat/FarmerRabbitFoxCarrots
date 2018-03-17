@@ -4,7 +4,7 @@
  * Date: 18.03.2018
  * * * * * * * * * * * * * * * * * *
  
- Compile command: g++ -std=c++11 main.cpp -o 150140117
+ Compile command: g++ -std=c++11 main.cpp -o project1
  
  * * * * * * * * * * * * * * * * * */
 
@@ -29,6 +29,10 @@ class Graph {
     void insertNode(Position farmer, Position rabbit, Position fox,
                     Position carrot, Node* parent, Node* insert);
     Node* findDuplicate(Node* const compare, Node* const parent);
+    int findNode(Position farmer, Position rabbit,
+                   Position fox, Position carrot) const;
+    vector<Node*> dfsPath(Node* start, Node* end, vector<bool> explored,
+                          vector<Node*> path) const;
   public:
     Graph();
     ~Graph();

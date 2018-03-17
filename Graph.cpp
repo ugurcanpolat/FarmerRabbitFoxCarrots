@@ -4,7 +4,7 @@
  * Date: 18.03.2018
  * * * * * * * * * * * * * * * * * *
  
- Compile command: g++ -std=c++11 main.cpp -o 150140117
+ Compile command: g++ -std=c++11 main.cpp -o project1
  
  * * * * * * * * * * * * * * * * * */
 
@@ -20,7 +20,7 @@ Graph::Graph() {
     safeQueue.push(initial);
     
     Node* insert;
-    while(!(nodes.back()->isFinal())) {
+    while(!safeQueue.empty()) {
         insert = safeQueue.front();
         safeQueue.pop();
         if (!insert->adjacency.empty())
@@ -62,7 +62,8 @@ void Graph::insertNode(Position farmer, Position rabbit, Position fox,
     Node* newNode = new Node;
     newNode->update(farmer,rabbit,fox,carrot);
     if (findDuplicate(newNode,insert) == nullptr) {
-        newNode->adjacency.push_back(insert);
+        if (newNode->safe)
+            newNode->adjacency.push_back(insert);
         insert->adjacency.push_back(newNode);
         newNode->nodeId = static_cast<int>(nodes.size());
         nodes.push_back(newNode);
@@ -72,7 +73,8 @@ void Graph::insertNode(Position farmer, Position rabbit, Position fox,
     } else {
         Node* duplicate = findDuplicate(newNode, insert);
         if (*duplicate != *parent && duplicate->farmer != NOTSPECIFIED) {
-            duplicate->adjacency.push_back(insert);
+            if (duplicate->safe)
+                duplicate->adjacency.push_back(insert);
             insert->adjacency.push_back(duplicate);
         } else
             delete duplicate;
@@ -96,6 +98,16 @@ Node* Graph::findDuplicate(Node* const compare, Node* const parent){
     return nullptr;
 }
 
+int Graph::findNode(Position farmer, Position rabbit,
+                    Position fox, Position carrot) const {
+    Node find(farmer,rabbit,fox,carrot);
+    for(int i = 0; i < nodes.size(); i++) {
+        if (find == *nodes[i])
+            return nodes[i]->nodeId;
+    }
+    return -1;
+}
+
 void Graph::bfsSolve() const {
     int visitCount = 1;
     int maxMem = 0;
@@ -116,7 +128,7 @@ void Graph::bfsSolve() const {
     
     queue<Node*> bfsQueue;
     flag[0] = true;
-    bfsQueue.push(nodes[0]);
+    bfsQueue.push(nodes[findNode(EAST, EAST, EAST, EAST)]);
     
     while(!bfsQueue.empty()) {
         Node* v = bfsQueue.front();
@@ -133,15 +145,16 @@ void Graph::bfsSolve() const {
                 
                 if(bfsQueue.size() > maxMem)
                     maxMem = static_cast<int>(bfsQueue.size());
+                
+                visitCount++;
             }
-            visitCount++;
         }
     }
     
     stack<Node*> printStack;
     
     int solutionCount = 0;
-    int visited = 14;
+    int visited = findNode(WEST, WEST, WEST, WEST);
     while(visited != 0) {
         printStack.push(nodes[visited]);
         visited = prev[visited]->nodeId;
@@ -170,5 +183,76 @@ void Graph::bfsSolve() const {
 }
 
 void Graph::dfsSolve() const {
-
+    int visitCount = 0;
+    int maxMem = 0;
+    float runtime = 0.0;
+    int size = static_cast<int>(nodes.size());
+    
+    using namespace chrono;
+    auto dfsStart = high_resolution_clock::now(); // Begin time stamp
+    
+    stack<Node*> dfsStack;
+    vector<bool> explored;
+    explored.resize(size);
+    
+    for(int i = 0; i < size; i++)
+        explored[i] = false;
+    
+    dfsStack.push(nodes[findNode(EAST, EAST, EAST, EAST)]);
+    
+    int finalNode = findNode(WEST, WEST, WEST, WEST);
+    vector<Node*> parent;
+    parent.resize(size);
+    
+    while(!dfsStack.empty()) {
+        Node* u = dfsStack.top();
+        dfsStack.pop();
+        if(explored[u->nodeId] == false) {
+            explored[u->nodeId] = true;
+            
+            int adjSize = static_cast<int>(u->adjacency.size());
+            
+            for(int i = 0; i < adjSize; i++) {
+                Node* v = u->adjacency[i];
+                dfsStack.push(v);
+                if(explored[v->nodeId] == false)
+                    parent[v->nodeId] = u;
+                
+                if(dfsStack.size() > maxMem)
+                    maxMem = static_cast<int>(dfsStack.size());
+                
+            }
+            visitCount++;
+        }
+    }
+    
+    stack<Node*> printStack;
+    
+    int solutionCount = 0;
+    int visited = finalNode;
+    while(visited != 0) {
+        printStack.push(nodes[visited]);
+        visited = parent[visited]->nodeId;
+        solutionCount++;
+    }
+    printStack.push(nodes[visited]);
+    
+    auto dfsEnd = high_resolution_clock::now(); // Begin time stamp
+    // Get the elapsed time in unit microseconds
+    runtime = duration_cast<microseconds>(dfsEnd - dfsStart).count();
+    runtime /= 1000;
+    
+    cout << "Algorithm: DFS" << endl;
+    cout << "Number of the visited nodes: " << visitCount << endl;
+    cout << "Maximum number of nodes kept in the memory: " << maxMem << endl;
+    cout << "Running time: " << fixed << setprecision(3) << runtime << " milliseconds" << endl;
+    cout << "Solution move count: " << solutionCount << endl;
+    
+    while(!printStack.empty()) {
+        Node* current = printStack.top();
+        printStack.pop();
+        current->printNode();
+        if(!printStack.empty())
+            current->printMove(printStack.top());
+    }
 }

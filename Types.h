@@ -4,7 +4,7 @@
  * Date: 18.03.2018
  * * * * * * * * * * * * * * * * * *
  
- Compile command: g++ -std=c++11 main.cpp -o 150140117
+ Compile command: g++ -std=c++11 main.cpp -o project1
  
  * * * * * * * * * * * * * * * * * */
 
